@@ -20,7 +20,7 @@ def get_args():
     parser.add_argument(
         "--vis_dir",
         type=str,
-        default="demo_vis/",
+        default="results/",
         help="The directory for visualization",
     )
     return parser.parse_args()
@@ -32,9 +32,9 @@ if __name__ == "__main__":
 
     prompts = [
         {
-            "image": "assets/trex2_api_examples/generic_target.jpg",
+            "image": "images/Pic_1.jpg",
             "prompts": [
-                {"category_id": 1, "embd": "src/football_player.safetensors"},
+                {"category_id": 1, "embd": "prompts/best.safetensors"},
             ],
         }
     ]
@@ -45,12 +45,14 @@ if __name__ == "__main__":
         scores = np.array(result["scores"])
         labels = np.array(result["labels"])
         boxes = np.array(result["boxes"])
+        print("Num of beans before filter: ", len(boxes))
         filter_mask = scores > args.box_threshold
         filtered_result = {
             "scores": scores[filter_mask],
             "labels": labels[filter_mask],
             "boxes": boxes[filter_mask],
         }
+        print("Num of beans after filter: ", len(filtered_result["bboxes"]))
         filtered_results.append(filtered_result)
     # visualize the results
     if not os.path.exists(args.vis_dir):
